@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animated Portfolio</title>
+
+<style>
+  :root {
+    --bg: #f8fafc;
+    --text: #0f172a;
+    --card: #ffffff;
+    --primary: #2563eb;
+  }
+
+  body.dark {
+    --bg: #020617;
+    --text: #e5e7eb;
+    --card: #0f172a;
+    --primary: #38bdf8;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    transition: 0.4s;
+    overflow: hidden;
+  }
+
+  nav {
+    background: var(--card);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+
+  nav h2 {
+    color: var(--primary);
+  }
+
+  nav button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .book {
+    perspective: 1500px;
+    width: 100%;
+    height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .page {
+    position: absolute;
+    width: 80%;
+    max-width: 900px;
+    height: 75%;
+    background: var(--card);
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease, opacity 0.8s;
+  }
+
+  .page h1 {
+    margin-bottom: 15px;
+  }
+
+  .page p {
+    font-size: 22px;
+    line-height: 1.6;
+  }
+
+  .hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .skills span {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    padding: 10px 16px;
+    margin: 8px;
+    border-radius: 25px;
+    font-size: 16px;
+  }
+
+  .project-card {
+    background: var(--bg);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 15px;
+  }
+
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .controls button {
+    padding: 10px 20px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      width: 95%;
+      height: 80%;
+      padding: 25px;
+    }
+
+    .page p {
+      font-size: 18px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<nav>
+  <h2>MyPortfolio</h2>
+  <button onclick="toggleDarkMode()">🌙</button>
+</nav>
+
+<div class="book">
+
+  <div class="page" id="page0">
+    <h1>Hi, I'm Manish Kumar Tiwari 👋</h1>
+    <p>
+      I am a frontend developer who enjoys building modern, responsive,
+      and user-friendly web interfaces using clean design and animations.
+    </p>
+  </div>
+
+  <div class="page hidden" id="page1">
+    <h1>Skills</h1>
+    <div class="skills">
+      <p><span>HTML</span></p>
+      <span>CSS</span>
+      <p><span>JavaScript</span></p>
+      <span>Python</span>
+      <p><span>C++</span></p>
+    </div>
+  </div>
+
+  <div class="page hidden" id="page2">
+    <h1>Projects</h1>
+    <div class="project-card">
+      <h3>Basic Chatbot using Python</h3>
+      <p>A simple chatbot that responds using predefined logic.</p>
+    </div>
+  </div>
+
+  <div class="page hidden" id="page3">
+    <h1>Contact Me</h1>
+    <p>Email: manishkumartiwari7898@gmail.com</p>
+    <p>LinkedIn: https://www.linkedin.com/in/manish-kumar-tiwari-9606b5365/</p>
+  </div>
+
+</div>
+
+<div class="controls">
+  <button onclick="prevPage()">⬅ Previous</button>
+  <button onclick="nextPage()">Next ➡</button>
+</div>
+
+<script>
+  let currentPage = 0;
+  const pages = document.querySelectorAll(".page");
+  let slideshow;
+
+  function showPage(newPage, direction) {
+    pages[currentPage].style.transform =
+      direction === "next" ? "rotateY(60deg)" : "rotateY(60deg)";
+    pages[currentPage].classList.add("hidden");
+
+    pages[newPage].classList.remove("hidden");
+    pages[newPage].style.transform = "rotateY(0deg)";
+
+    currentPage = newPage;
+  }
+
+  function nextPage() {
+    resetSlideshow();
+    if (currentPage < pages.length - 1) {
+      showPage(currentPage + 1, "next");
+    } else {
+      showPage(0, "next");
+    }
+  }
+
+  function prevPage() {
+    resetSlideshow();
+    if (currentPage > 0) {
+      showPage(currentPage - 1, "prev");
+    }
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark");
+  }
+
+  function startSlideshow() {
+    slideshow = setInterval(() => {
+      nextPage();
+    }, 5000); // 5 seconds
+  }
+
+  function resetSlideshow() {
+    clearInterval(slideshow);
+    startSlideshow();
+  }
+
+  startSlideshow();
+</script>
+
+</body>
+</html>
